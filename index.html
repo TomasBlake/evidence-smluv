@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Evidence smluv</title>
+<style>body{margin:0;font:15px/1.5 system-ui,sans-serif;color:#1f2933;background:#f6f7f9}
+header{background:#1b3a5c;color:#fff;display:flex;align-items:center;gap:18px;padding:10px 22px}header a{color:#fff;text-decoration:none;padding:6px 10px;border-radius:6px}header a.on{background:rgba(255,255,255,.2)}
+main{max-width:1080px;margin:0 auto;padding:22px}h1{margin:0 0 14px}.card{background:#fff;border:1px solid #dde3ea;border-radius:10px;padding:16px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid #edf0f3}.filtry button{border:1px solid #c7d0da;background:#fff;border-radius:16px;padding:5px 12px;margin:0 6px 6px 0;cursor:pointer}
+.filtry button.on{background:#1b3a5c;color:#fff;border-color:#1b3a5c}.btn{background:#1b3a5c;color:#fff;border:0;border-radius:6px;padding:8px 14px;cursor:pointer}.btn.sec{background:#e5eaf0;color:#1f2933}
+.stav{display:inline-block;padding:2px 8px;border-radius:10px;background:#e8eef5}.stav.Podepsaná{background:#dcf5e3}.stav.Ukončená{background:#f1e4e4}.nacitam{color:#6b7785}label{display:block;margin:8px 0}input,select{padding:6px 8px;border:1px solid #c7d0da;border-radius:6px;min-width:260px}
+.strankovani button{border:1px solid #c7d0da;background:#fff;border-radius:6px;padding:4px 10px;margin-right:4px;cursor:pointer}.strankovani button.on{background:#1b3a5c;color:#fff}
+:root{color-scheme:light;--page:#f6f7f9;--ink:#1f2933}html,body{background:var(--page);color:var(--ink)}
+header{flex-wrap:wrap;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tbl{overflow-x:auto}input,select{min-width:0;max-width:100%}.login{max-width:420px;margin:48px auto}.login input{width:100%;box-sizing:border-box}
+.pata{max-width:1080px;margin:0 auto;padding:8px 16px 32px;color:#5b6673;font-size:13px}.pata button{border:1px solid #c7d0da;background:#fff;border-radius:6px;padding:3px 10px;cursor:pointer}
+:focus-visible{outline:3px solid #2f6db3;outline-offset:2px}</style>
+</head>
+<body>
+<header><strong>Evidence smluv</strong><nav aria-label="Hlavní nabídka"></nav><span style="margin-left:auto" id="kdo"></span></header>
+<main id="app"></main>
+<p class="pata">Zkušební aplikace s vymyšlenými daty – žádná skutečná organizace ani smlouvy. Změny se ukládají jen ve vašem prohlížeči.
+<button type="button" id="obnovit">Obnovit vzorová data</button></p>
+<script>
+const VZOR = {"protistrany": [{"id": 1, "nazev": "Stavby Novák s. r. o.", "ico": "12345678", "obec": "Říčany"}, {"id": 2, "nazev": "Obec Horní Lhota", "ico": "00241253", "obec": "Horní Lhota"}, {"id": 3, "nazev": "Technické služby, a. s.", "ico": "45678901", "obec": "Brno"}, {"id": 4, "nazev": "Jan Dvořák", "ico": "87654321", "obec": "Praha"}, {"id": 5, "nazev": "Sokol Dolní Lhota, z. s.", "ico": "11223344", "obec": "Dolní Lhota"}, {"id": 6, "nazev": "Zahrady Malá", "ico": "55667788", "obec": "Kolín"}], "smlouvy": [{"id": 1, "cislo": "SML-2026-001", "nazev": "Nájem – pronájem sálu", "protistrana": 2, "castka": 96000, "stav": "Podepsaná", "uzavreno": "2026-02-02", "platiDo": "2027-02-01"}, {"id": 2, "cislo": "SML-2026-002", "nazev": "Služby – svoz odpadu", "protistrana": 3, "castka": 9600, "stav": "Ukončená", "uzavreno": "2026-03-03", "platiDo": "2027-03-01"}, {"id": 3, "cislo": "SML-2026-003", "nazev": "Kupní – pozemek u školy", "protistrana": 4, "castka": 150000, "stav": "Návrh", "uzavreno": "2026-04-04", "platiDo": "2027-04-01"}, {"id": 4, "cislo": "SML-2026-004", "nazev": "Dotace – kulturní akce", "protistrana": 5, "castka": 40000, "stav": "Podepsaná", "uzavreno": "2026-05-05", "platiDo": "2027-05-01"}, {"id": 5, "cislo": "SML-2026-005", "nazev": "Dílo – oprava chodníku", "protistrana": 6, "castka": 26700, "stav": "Ukončená", "uzavreno": "2026-06-06", "platiDo": "2027-06-01"}, {"id": 6, "cislo": "SML-2026-006", "nazev": "Nájem – pronájem sálu", "protistrana": 1, "castka": 12500, "stav": "Návrh", "uzavreno": "2026-07-07", "platiDo": "2027-07-01"}, {"id": 7, "cislo": "SML-2026-007", "nazev": "Služby – svoz odpadu", "protistrana": 2, "castka": 96000, "stav": "Podepsaná", "uzavreno": "2026-08-08", "platiDo": "2027-08-01"}, {"id": 8, "cislo": "SML-2026-008", "nazev": "Kupní – pozemek u školy", "protistrana": 3, "castka": 9600, "stav": "Ukončená", "uzavreno": "2026-09-09", "platiDo": "2027-09-01"}, {"id": 9, "cislo": "SML-2026-009", "nazev": "Dotace – kulturní akce", "protistrana": 4, "castka": 150000, "stav": "Návrh", "uzavreno": "2026-01-10", "platiDo": "2027-10-01"}, {"id": 10, "cislo": "SML-2026-010", "nazev": "Dílo – oprava chodníku", "protistrana": 5, "castka": 40000, "stav": "Podepsaná", "uzavreno": "2026-02-11", "platiDo": "2027-11-01"}, {"id": 11, "cislo": "SML-2026-011", "nazev": "Nájem – pronájem sálu", "protistrana": 6, "castka": 26700, "stav": "Ukončená", "uzavreno": "2026-03-12", "platiDo": "2027-12-01"}, {"id": 12, "cislo": "SML-2026-012", "nazev": "Služby – svoz odpadu", "protistrana": 1, "castka": 12500, "stav": "Návrh", "uzavreno": "2026-04-13", "platiDo": "2027-01-01"}, {"id": 13, "cislo": "SML-2026-013", "nazev": "Kupní – pozemek u školy", "protistrana": 2, "castka": 96000, "stav": "Podepsaná", "uzavreno": "2026-05-14", "platiDo": "2027-02-01"}, {"id": 14, "cislo": "SML-2026-014", "nazev": "Dotace – kulturní akce", "protistrana": 3, "castka": 9600, "stav": "Ukončená", "uzavreno": "2026-06-15", "platiDo": "2027-03-01"}, {"id": 15, "cislo": "SML-2026-015", "nazev": "Dílo – oprava chodníku", "protistrana": 4, "castka": 150000, "stav": "Návrh", "uzavreno": "2026-07-16", "platiDo": "2027-04-01"}, {"id": 16, "cislo": "SML-2026-016", "nazev": "Nájem – pronájem sálu", "protistrana": 5, "castka": 40000, "stav": "Podepsaná", "uzavreno": "2026-08-17", "platiDo": "2027-05-01"}, {"id": 17, "cislo": "SML-2026-017", "nazev": "Služby – svoz odpadu", "protistrana": 6, "castka": 26700, "stav": "Ukončená", "uzavreno": "2026-09-18", "platiDo": "2027-06-01"}, {"id": 18, "cislo": "SML-2026-018", "nazev": "Kupní – pozemek u školy", "protistrana": 1, "castka": 12500, "stav": "Návrh", "uzavreno": "2026-01-19", "platiDo": "2027-07-01"}, {"id": 19, "cislo": "SML-2026-019", "nazev": "Dotace – kulturní akce", "protistrana": 2, "castka": 96000, "stav": "Podepsaná", "uzavreno": "2026-02-20", "platiDo": "2027-08-01"}, {"id": 20, "cislo": "SML-2026-020", "nazev": "Dílo – oprava chodníku", "protistrana": 3, "castka": 9600, "stav": "Ukončená", "uzavreno": "2026-03-21", "platiDo": "2027-09-01"}, {"id": 21, "cislo": "SML-2026-021", "nazev": "Nájem – pronájem sálu", "protistrana": 4, "castka": 150000, "stav": "Návrh", "uzavreno": "2026-04-22", "platiDo": "2027-10-01"}, {"id": 22, "cislo": "SML-2026-022", "nazev": "Služby – svoz odpadu", "protistrana": 5, "castka": 40000, "stav": "Podepsaná", "uzavreno": "2026-05-23", "platiDo": "2027-11-01"}, {"id": 23, "cislo": "SML-2026-023", "nazev": "Kupní – pozemek u školy", "protistrana": 6, "castka": 26700, "stav": "Ukončená", "uzavreno": "2026-06-24", "platiDo": "2027-12-01"}, {"id": 24, "cislo": "SML-2026-024", "nazev": "Dotace – kulturní akce", "protistrana": 1, "castka": 12500, "stav": "Návrh", "uzavreno": "2026-07-25", "platiDo": "2027-01-01"}], "naStranu": 10, "stavy": ["Návrh", "Podepsaná", "Ukončená"]};
+const KLIC = 'evidence-smluv-data-v1', RELACE = 'evidence-smluv-relace';
+const ulozene = () => { try { const d = JSON.parse(localStorage.getItem(KLIC) || 'null'); return d && Array.isArray(d.smlouvy) ? d : null; } catch (e) { return null; } };
+let DB = ulozene() || JSON.parse(JSON.stringify(VZOR));
+const uloz = () => { try { localStorage.setItem(KLIC, JSON.stringify(DB)); } catch (e) { /* bez úložiště jen v paměti */ } };
+let token = (() => { try { return sessionStorage.getItem(RELACE) || ''; } catch (e) { return ''; } })();
+
+/* ---- API ve stránce: /api/v1/… odpovídá jako server testsite/apiapp.py ---- */
+const protistrana = id => DB.protistrany.find(p => p.id === id) || null;
+const smlouva = s => ({id: s.id, cislo: s.cislo, nazev: s.nazev, protistrana: protistrana(s.protistrana), castka: s.castka, stav: s.stav, uzavreno: s.uzavreno, platiDo: s.platiDo});
+const json = (status, data) => new Response(JSON.stringify(data), {status, headers: {'Content-Type': 'application/json; charset=utf-8'}});
+function apiGet(p, q) {
+  if (p === '/api/v1/stats') {
+    const pod = DB.smlouvy.filter(s => s.stav === 'Podepsaná');
+    return json(200, {navrh: DB.smlouvy.filter(s => s.stav === 'Návrh').length, podepsana: pod.length, ukoncena: DB.smlouvy.filter(s => s.stav === 'Ukončená').length,
+      hodnota: pod.reduce((a, s) => a + s.castka, 0), konci: DB.smlouvy.filter(s => s.platiDo <= '2027-03-01').slice(0, 5).map(s => ({id: s.id, cislo: s.cislo, nazev: s.nazev, platiDo: s.platiDo}))});
+  }
+  if (p === '/api/v1/smlouvy') {
+    const stav = q.get('stav') || '', strana = +(q.get('strana') || 1), vyber = DB.smlouvy.filter(s => !stav || s.stav === stav);
+    const pocty = {vse: DB.smlouvy.length}; DB.stavy.forEach(st => { pocty[st] = DB.smlouvy.filter(s => s.stav === st).length; });
+    return json(200, {polozky: vyber.slice((strana - 1) * DB.naStranu, strana * DB.naStranu).map(smlouva), celkem: vyber.length, strana, naStranu: DB.naStranu, pocty});
+  }
+  let m = p.match(/^\/api\/v1\/smlouvy\/(\d+)$/);
+  if (m) { const s = DB.smlouvy.find(x => x.id === +m[1]); return s ? json(200, smlouva(s)) : json(404, {error: 'not found'}); }
+  if (p === '/api/v1/protistrany') return json(200, {polozky: DB.protistrany.map(x => Object.assign({}, x, {smluv: DB.smlouvy.filter(s => s.protistrana === x.id).length}))});
+  m = p.match(/^\/api\/v1\/protistrany\/(\d+)$/);
+  if (m) { const x = protistrana(+m[1]); return x ? json(200, Object.assign({}, x, {smlouvy: DB.smlouvy.filter(s => s.protistrana === x.id).map(s => ({id: s.id, cislo: s.cislo, nazev: s.nazev, stav: s.stav}))})) : json(404, {error: 'not found'}); }
+  return json(404, {error: 'not found'});
+}
+function apiPost(p, body) {
+  const d = (() => { try { return JSON.parse(body || '{}'); } catch (e) { return {}; } })();
+  if (p === '/api/v1/smlouvy') {
+    const id = Math.max(...DB.smlouvy.map(s => s.id)) + 1;
+    DB.smlouvy.push({id, cislo: 'SML-2026-' + String(id).padStart(3, '0'), nazev: String(d.nazev || 'Nová smlouva').slice(0, 80), protistrana: +d.protistrana || 1,
+      castka: +d.castka || 0, stav: 'Návrh', uzavreno: new Date().toISOString().slice(0, 10), platiDo: String(d.platiDo || '2027-06-30')});
+    uloz(); return json(201, smlouva(DB.smlouvy[DB.smlouvy.length - 1]));
+  }
+  const m = p.match(/^\/api\/v1\/smlouvy\/(\d+)\/(podepsat|ukoncit)$/);
+  if (m) { const s = DB.smlouvy.find(x => x.id === +m[1]); if (!s) return json(404, {error: 'not found'}); s.stav = m[2] === 'podepsat' ? 'Podepsaná' : 'Ukončená'; uloz(); return json(200, smlouva(s)); }
+  return json(404, {error: 'not found'});
+}
+const puvodniFetch = window.fetch.bind(window);
+window.fetch = async (vstup, volby) => {
+  const url = new URL(typeof vstup === 'string' ? vstup : vstup.url, location.href);
+  if (!url.pathname.startsWith('/api/v1')) return puvodniFetch(vstup, volby);
+  await new Promise(r => setTimeout(r, 250 + Math.random() * 250));   // jako síť: snímání musí čekat na data
+  const h = new Headers((volby && volby.headers) || {});
+  if (h.get('Authorization') !== 'Bearer ' + token || !token) return json(401, {error: 'unauthorized'});
+  return (volby && volby.method === 'POST') ? apiPost(url.pathname, volby.body) : apiGet(url.pathname, url.searchParams);
+};
+
+/* ---- aplikace (stejné obrazovky jako apiapp.py, navigace přes kotvy) ---- */
+const app = document.getElementById('app');
+const api = async (cesta, volby) => { const r = await fetch('/api/v1' + cesta, Object.assign({headers: {Authorization: 'Bearer ' + token, 'Content-Type': 'application/json'}}, volby || {})); if (!r.ok) throw new Error('API ' + r.status); return r.json(); };
+const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const kc = n => Number(n).toLocaleString('cs-CZ') + ' Kč';
+const dat = d => { const [r, m, dd] = String(d).split('-'); return `${+dd}. ${+m}. ${r}`; };
+const odkaz = (kotva, text, cls) => `<a href="#${kotva}" class="${cls || ''}">${esc(text)}</a>`;
+const FILTR = {stav: '', strana: 1};
+function menu(k) {
+  const polozky = [['prehled', 'Přehled'], ['smlouvy', 'Smlouvy'], ['protistrany', 'Protistrany'], ['nova-smlouva', 'Nová smlouva']];
+  const hlavni = k.startsWith('smlouva-') ? 'smlouvy' : k.startsWith('protistrana-') ? 'protistrany' : k;
+  document.querySelector('header nav').innerHTML = token ? polozky.map(([h, t]) => `<a href="#${h}" class="${hlavni === h ? 'on' : ''}">${t}</a>`).join('') : '';
+  document.getElementById('kdo').innerHTML = token ? 'Jana Správcová <button type="button" class="btn sec" id="odhlasit">Odhlásit</button>' : '';
+}
+function prihlaseni() {
+  app.innerHTML = `<div class="card login"><h1>Přihlášení</h1><p class="nacitam">Testovací aplikace s vymyšlenými daty. Testovací účet: <b>jana.spravcova</b>, heslo <b>test</b>.</p>
+    <form id="prihlaseni"><label>Uživatelské jméno <input id="jmeno" name="jmeno" autocomplete="username" required></label>
+    <label>Heslo <input id="heslo" name="heslo" type="password" autocomplete="current-password" required></label><p id="chyba" class="nacitam" role="alert"></p>
+    <p><button class="btn" type="submit">Přihlásit se</button></p></form></div>`;
+  document.getElementById('prihlaseni').addEventListener('submit', e => {
+    e.preventDefault(); const f = new FormData(e.target);
+    if (f.get('jmeno') !== 'jana.spravcova' || f.get('heslo') !== 'test') { document.getElementById('chyba').textContent = 'Jméno nebo heslo nesedí. Testovací účet je jana.spravcova / test.'; return; }
+    token = 'test-token-' + Date.now().toString(36); try { sessionStorage.setItem(RELACE, token); } catch (err) { /* jen v paměti */ }
+    if (!location.hash || location.hash === '#prihlaseni') location.hash = 'prehled'; else route();
+  });
+}
+async function prehled() {
+  app.innerHTML = '<h1>Přehled</h1><p class="nacitam">Načítám…</p>';
+  const s = await api('/stats');
+  app.innerHTML = `<h1>Přehled</h1><div class="card"><h2>Smlouvy podle stavu</h2><p>Návrh: <b>${s.navrh}</b> · Podepsaná: <b>${s.podepsana}</b> · Ukončená: <b>${s.ukoncena}</b></p>
+    <p>Celková hodnota podepsaných smluv: <b>${kc(s.hodnota)}</b></p>${odkaz('smlouvy', 'Zobrazit smlouvy', 'btn')}</div>
+    <div class="card"><h2>Končící do 90 dnů</h2><div class="tbl"><table><thead><tr><th>Číslo</th><th>Název</th><th>Platí do</th></tr></thead><tbody>${s.konci.map(x => `<tr><td>${odkaz('smlouva-' + x.id, x.cislo)}</td><td>${esc(x.nazev)}</td><td>${dat(x.platiDo)}</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+async function seznam() {
+  app.innerHTML = '<h1>Smlouvy</h1><p class="nacitam">Načítám…</p>';
+  const d = await api(`/smlouvy?stav=${encodeURIComponent(FILTR.stav)}&strana=${FILTR.strana}`);
+  const stavy = ['', 'Návrh', 'Podepsaná', 'Ukončená'], strany = Math.max(1, Math.ceil(d.celkem / d.naStranu));
+  app.innerHTML = `<h1>Smlouvy</h1><div class="card"><div class="filtry">${stavy.map(s => `<button type="button" data-stav="${s}" class="${FILTR.stav === s ? 'on' : ''}">${s || 'Všechny'} ${d.pocty[s || 'vse']}</button>`).join('')}</div>
+    <div class="tbl"><table><thead><tr><th>Číslo</th><th>Název</th><th>Protistrana</th><th>Částka</th><th>Stav</th><th>Uzavřeno</th></tr></thead><tbody>
+    ${d.polozky.map(s => `<tr><td>${odkaz('smlouva-' + s.id, s.cislo)}</td><td>${esc(s.nazev)}</td><td>${odkaz('protistrana-' + s.protistrana.id, s.protistrana.nazev)}</td><td>${kc(s.castka)}</td><td><span class="stav ${s.stav}">${s.stav}</span></td><td>${dat(s.uzavreno)}</td></tr>`).join('')}</tbody></table></div>
+    <div class="strankovani">${Array.from({length: strany}, (_, i) => `<button type="button" data-strana="${i + 1}" class="${FILTR.strana === i + 1 ? 'on' : ''}">${i + 1}</button>`).join('')} <span class="nacitam">${d.celkem} smluv</span></div></div>`;
+}
+async function detail(id) {
+  app.innerHTML = '<h1>Smlouva</h1><p class="nacitam">Načítám…</p>';
+  const s = await api('/smlouvy/' + id);
+  const akce = s.stav === 'Návrh' ? '<button type="button" class="btn" data-akce="podepsat">Podepsat</button>' : s.stav === 'Podepsaná' ? '<button type="button" class="btn" data-akce="ukoncit">Ukončit</button>' : '';
+  app.innerHTML = `<h1>Smlouva ${esc(s.cislo)}</h1><div class="card"><p><b>Název:</b> ${esc(s.nazev)}</p><p><b>Protistrana:</b> ${odkaz('protistrana-' + s.protistrana.id, s.protistrana.nazev)}</p>
+    <p><b>Částka:</b> ${kc(s.castka)}</p><p><b>Stav:</b> <span class="stav ${s.stav}">${s.stav}</span></p><p><b>Uzavřeno:</b> ${dat(s.uzavreno)}</p><p><b>Platí do:</b> ${dat(s.platiDo)}</p>
+    <p>${akce} ${odkaz('smlouvy', 'Zpět na seznam', 'btn sec')}</p></div>`;
+  app.querySelectorAll('[data-akce]').forEach(b => b.addEventListener('click', async () => { await api(`/smlouvy/${id}/${b.dataset.akce}`, {method: 'POST', body: '{}'}); detail(id); }));
+}
+async function nova() {
+  app.innerHTML = '<h1>Nová smlouva</h1><p class="nacitam">Načítám…</p>';
+  const p = await api('/protistrany');
+  app.innerHTML = `<h1>Nová smlouva</h1><div class="card"><form id="f"><label>Název <input id="nazev" name="nazev" required placeholder="Např. Dílo – oprava střechy"></label>
+    <label>Protistrana <select id="protistrana" name="protistrana">${p.polozky.map(x => `<option value="${x.id}">${esc(x.nazev)}</option>`).join('')}</select></label>
+    <label>Částka (Kč) <input id="castka" name="castka" type="number" value="10000"></label><label>Platí do <input id="platiDo" name="platiDo" type="date" value="2027-06-30"></label>
+    <p><button class="btn" type="submit">Uložit smlouvu</button> ${odkaz('smlouvy', 'Zrušit', 'btn sec')}</p></form></div>`;
+  document.getElementById('f').addEventListener('submit', async e => {
+    e.preventDefault(); const f = new FormData(e.target);
+    const s = await api('/smlouvy', {method: 'POST', body: JSON.stringify({nazev: f.get('nazev'), protistrana: +f.get('protistrana'), castka: +f.get('castka'), platiDo: f.get('platiDo')})});
+    location.hash = 'smlouva-' + s.id;
+  });
+}
+async function protistrany() {
+  app.innerHTML = '<h1>Protistrany</h1><p class="nacitam">Načítám…</p>';
+  const d = await api('/protistrany');
+  app.innerHTML = `<h1>Protistrany</h1><div class="card"><div class="tbl"><table><thead><tr><th>Název</th><th>IČO</th><th>Obec</th><th>Smluv</th></tr></thead><tbody>
+    ${d.polozky.map(p => `<tr><td>${odkaz('protistrana-' + p.id, p.nazev)}</td><td>${p.ico}</td><td>${esc(p.obec)}</td><td>${p.smluv}</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+async function protistranaDetail(id) {
+  app.innerHTML = '<h1>Protistrana</h1><p class="nacitam">Načítám…</p>';
+  const p = await api('/protistrany/' + id);
+  app.innerHTML = `<h1>${esc(p.nazev)}</h1><div class="card"><p><b>IČO:</b> ${p.ico}</p><p><b>Obec:</b> ${esc(p.obec)}</p></div><div class="card"><h2>Smlouvy (${p.smlouvy.length})</h2>
+    <div class="tbl"><table><thead><tr><th>Číslo</th><th>Název</th><th>Stav</th></tr></thead><tbody>${p.smlouvy.map(s => `<tr><td>${odkaz('smlouva-' + s.id, s.cislo)}</td><td>${esc(s.nazev)}</td><td><span class="stav ${s.stav}">${s.stav}</span></td></tr>`).join('')}</tbody></table></div></div>`;
+}
+async function route() {
+  const k = location.hash.slice(1) || 'prehled';
+  menu(k);
+  if (!token) return prihlaseni();
+  try {
+    if (k === 'prehled' || k === 'prihlaseni') return await prehled();
+    if (k === 'smlouvy') return await seznam();
+    if (k === 'nova-smlouva') return await nova();
+    if (k === 'protistrany') return await protistrany();
+    let m = k.match(/^smlouva-(\d+)$/); if (m) return await detail(m[1]);
+    m = k.match(/^protistrana-(\d+)$/); if (m) return await protistranaDetail(m[1]);
+    app.innerHTML = '<h1>Stránka nenalezena</h1>';
+  } catch (e) { app.innerHTML = `<h1>Chyba</h1><p>${esc(e.message)}</p>`; }
+}
+document.addEventListener('click', e => {
+  if (e.target.closest('#odhlasit')) { token = ''; try { sessionStorage.removeItem(RELACE); } catch (err) { /* nic */ } location.hash = 'prihlaseni'; route(); return; }
+  if (e.target.closest('#obnovit')) { DB = JSON.parse(JSON.stringify(VZOR)); uloz(); route(); return; }
+  const f = e.target.closest('[data-stav]'); if (f) { FILTR.stav = f.dataset.stav; FILTR.strana = 1; seznam(); return; }
+  const s = e.target.closest('[data-strana]'); if (s) { FILTR.strana = +s.dataset.strana; seznam(); }
+});
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
