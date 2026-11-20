@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Překážková dráha</title>
+<style>
+body{margin:0;font:15px/1.5 system-ui,sans-serif;color:#1f2933;background:#f6f7f9}
+header{background:#24364b;color:#fff;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+nav a{color:#fff;margin-right:10px;text-decoration:none;font-size:14px}nav a.on{text-decoration:underline}
+main{max-width:960px;margin:0 auto;padding:16px}.card{background:#fff;border:1px solid #d8dee6;border-radius:8px;padding:16px;margin-bottom:12px}
+button{border:1px solid #24364b;background:#24364b;color:#fff;border-radius:6px;padding:6px 12px;cursor:pointer}
+input{border:1px solid #9aa5b1;border-radius:6px;padding:6px 8px}.menu{position:relative;display:inline-block}
+.menu .pod{display:none;position:absolute;top:100%;left:0;background:#fff;border:1px solid #d8dee6;padding:8px;min-width:160px}
+.menu:hover .pod{display:block}.lista{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:2px solid #24364b;padding:16px;display:flex;gap:12px;align-items:center}
+.virt{height:240px;overflow:auto;border:1px solid #d8dee6;position:relative}.virt div{position:absolute;left:0;right:0;height:30px;padding:4px 8px}
+.nek{height:240px;overflow:auto;border:1px solid #d8dee6}.nek p{margin:0;padding:6px 8px;border-bottom:1px solid #eef1f4}
+:focus-visible{outline:3px solid #2f6db3;outline-offset:2px}
+</style>
+</head>
+<body>
+<header><strong>Překážková dráha</strong><nav aria-label="Překážky"></nav></header>
+<main id="app"></main>
+<div class="lista" id="souhlas" hidden><span>Tento web používá cookies. Pokračováním souhlasíte.</span><button id="odmitnout">Odmítnout</button><button id="prijmout">Přijmout vše</button></div>
+<script>
+const P = [
+  ['pomale', 'Pomalé načtení'], ['filtr', 'Filtr při psaní'], ['najeti', 'Nabídka po najetí'], ['stin', 'Stínový strom'],
+  ['ramec', 'Rámec'], ['nekonecny', 'Nekonečný seznam'], ['virtualni', 'Virtuální seznam'], ['dialog', 'Potvrzení'],
+  ['okno', 'Nové okno'], ['platno', 'Plátno'], ['relace', 'Krátká relace'], ['prekryti', 'Překrytý prvek'],
+];
+const app = document.getElementById('app');
+const RELACE = 'prekazky-relace', SOUHLAS = 'prekazky-souhlas';
+const store = (k, v) => { try { if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) { return null; } };
+const menu = k => { document.querySelector('nav').innerHTML = P.map(([h, t]) => `<a href="#${h}" class="${k.startsWith(h) ? 'on' : ''}">${t}</a>`).join(''); };
+const card = (h, body) => `<div class="card"><h1>${h}</h1>${body}</div>`;
+const smlouvy = Array.from({length: 40}, (_, i) => `Smlouva ${String(i + 1).padStart(3, '0')} – ${['nájem', 'služby', 'dodávka', 'dotace'][i % 4]}`);
+const V = {
+  uvod: () => card('Překážková dráha', '<p>Každá položka nabídky je jedna překážka. Zkušební stránka s vymyšlenými daty.</p>'),
+  pomale: () => { setTimeout(() => { const b = document.getElementById('pozde'); if (b) b.innerHTML = '<p>Obsah dorazil.</p><a href="#pomale-cil">Pokračovat na výsledek</a>'; }, 2500);
+    return card('Pomalé načtení', '<div id="pozde"><p>Načítám…</p></div>'); },
+  'pomale-cil': () => card('Výsledek pomalého načtení', '<p>Sem se dostane jen ten, kdo počkal.</p>'),
+  filtr: () => { setTimeout(() => { const i = document.getElementById('hledat'); if (i) i.addEventListener('input', () => { const q = i.value.toLowerCase(); document.getElementById('seznam').innerHTML = smlouvy.filter(s => s.toLowerCase().includes(q)).slice(0, 12).map(s => `<li>${s}</li>`).join('') || '<li>Nic nenalezeno.</li>'; }); });
+    return card('Filtr při psaní', `<label>Hledat smlouvu <input id="hledat" type="search"></label><ul id="seznam">${smlouvy.slice(0, 12).map(s => `<li>${s}</li>`).join('')}</ul>`); },
+  najeti: () => card('Nabídka po najetí', '<div class="menu"><button type="button">Další akce ▾</button><div class="pod"><a href="#najeti-cil">Skrytá stránka</a></div></div>'),
+  'najeti-cil': () => card('Skrytá stránka', '<p>Odkaz byl vidět jen po najetí myší.</p>'),
+  stin: () => { setTimeout(() => { const h = document.getElementById('host'); if (!h || h.shadowRoot) return; const r = h.attachShadow({mode: 'open'}); r.innerHTML = '<p>Uvnitř stínového stromu:</p><button id="vstin">Otevřít detail ze stínu</button>'; r.getElementById('vstin').addEventListener('click', () => { location.hash = 'stin-cil'; }); });
+    return card('Stínový strom', '<div id="host"></div>'); },
+  'stin-cil': () => card('Detail ze stínu', '<p>Tlačítko bylo ve stínovém stromu.</p>'),
+  ramec: () => card('Rámec', `<iframe title="Vložený formulář" style="width:100%;height:160px;border:1px solid #d8dee6" srcdoc="<p style='font:15px system-ui'>Formulář ve vloženém rámci</p><button onclick=&quot;parent.location.hash='ramec-cil'&quot;>Odeslat z rámce</button>"></iframe>`),
+  'ramec-cil': () => card('Výsledek z rámce', '<p>Tlačítko bylo ve vloženém rámci.</p>'),
+  nekonecny: () => { setTimeout(() => { const box = document.getElementById('nek'); if (!box) return; let n = 15; const more = () => { const k = Math.min(n + 15, 120); for (let i = n; i < k; i++) { const p = document.createElement('p'); p.textContent = `Záznam ${i + 1}`; box.appendChild(p); } n = k; }; box.addEventListener('scroll', () => { if (box.scrollTop + box.clientHeight > box.scrollHeight - 20) more(); }); });
+    return card('Nekonečný seznam', `<div class="nek" id="nek">${Array.from({length: 15}, (_, i) => `<p>Záznam ${i + 1}</p>`).join('')}</div><p>Další záznamy se načtou při posunu dolů.</p>`); },
+  virtualni: () => { setTimeout(() => { const box = document.getElementById('virt'); if (!box) return; const draw = () => { const top = Math.floor(box.scrollTop / 30); box.querySelector('.in').innerHTML = Array.from({length: 10}, (_, j) => top + j).filter(i => i < 500).map(i => `<div style="top:${i * 30}px">Řádek ${i + 1} z 500</div>`).join(''); }; box.addEventListener('scroll', draw); draw(); });
+    return card('Virtuální seznam', '<div class="virt" id="virt"><div class="in" style="height:15000px;position:relative"></div></div><p>V dokumentu je vždy jen deset řádků z pěti set.</p>'); },
+  dialog: () => { setTimeout(() => { const b = document.getElementById('archiv'); if (b) b.addEventListener('click', () => { if (confirm('Opravdu přesunout do archivu?')) location.hash = 'dialog-cil'; }); });
+    return card('Potvrzení', '<p>Akce se ptá systémovým dialogem.</p><button id="archiv">Přesunout do archivu</button>'); },
+  'dialog-cil': () => card('Přesunuto do archivu', '<p>Potvrzeno.</p>'),
+  okno: () => card('Nové okno', '<p><a href="#okno-cil" target="_blank" rel="noopener">Otevřít nápovědu v novém okně</a></p>'),
+  'okno-cil': () => card('Nápověda', '<p>Tato stránka se otevírá v novém okně.</p>'),
+  platno: () => { setTimeout(() => { const c = document.getElementById('graf'); if (!c) return; const g = c.getContext('2d'); [40, 90, 60, 120, 80].forEach((v, i) => { g.fillStyle = '#2f6db3'; g.fillRect(20 + i * 60, 140 - v, 40, v); }); });
+    return card('Plátno', '<canvas id="graf" width="340" height="150" role="img" aria-label="Graf smluv po měsících"></canvas><p>Graf nemá žádné prvky, jen pixely.</p>'); },
+  relace: () => { const t = +store(RELACE) || 0; if (!t || Date.now() - t > 90000) { store(RELACE, null); return relaceLogin(); }
+    return card('Krátká relace', '<p>Jste přihlášeni. Relace vyprší 90 s po přihlášení.</p><a href="#relace-detail">Detail účtu</a>'); },
+  'relace-detail': () => { const t = +store(RELACE) || 0; if (!t || Date.now() - t > 90000) { store(RELACE, null); return relaceLogin(); } return card('Detail účtu', '<p>Testovací účet.</p>'); },
+  prekryti: () => { setTimeout(() => { const s = document.getElementById('skryt'); if (s) s.addEventListener('click', () => { document.getElementById('kryt').remove(); }); });
+    return card('Překrytý prvek', '<div style="position:relative"><a href="#prekryti-cil">Zobrazit zprávu</a><div id="kryt" style="position:absolute;inset:-8px;background:rgba(255,255,255,.92);display:flex;align-items:center;gap:8px"><span>Nejdřív zavřete upozornění.</span><button id="skryt">Zavřít upozornění</button></div></div>'); },
+  'prekryti-cil': () => card('Zpráva', '<p>Odkaz byl zakrytý upozorněním.</p>'),
+};
+function relaceLogin() {
+  setTimeout(() => { const f = document.getElementById('prihl'); if (f) f.addEventListener('submit', e => { e.preventDefault(); store(RELACE, String(Date.now())); route(); }); });
+  return card('Přihlášení', '<form id="prihl"><p>Relace vypršela. Testovací heslo je <b>test</b>, nebo adresa končící <b>#relace-prihlasit</b>.</p><label>Heslo <input type="password" required></label> <button>Přihlásit</button></form>');
+}
+function route() {
+  if (location.hash === '#relace-prihlasit') { store(RELACE, String(Date.now())); history.replaceState(null, '', location.pathname + '#relace'); }
+  const k = location.hash.slice(1) || 'uvod';
+  menu(k);
+  app.innerHTML = (V[k] || V.uvod)();
+}
+document.getElementById('souhlas').hidden = !!store(SOUHLAS);
+for (const id of ['odmitnout', 'prijmout']) document.getElementById(id).addEventListener('click', () => { store(SOUHLAS, id); document.getElementById('souhlas').hidden = true; });
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
