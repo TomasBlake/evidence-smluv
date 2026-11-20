@@ -91,7 +91,7 @@ function menu(k) {
   document.getElementById('kdo').innerHTML = token ? 'Jana Správcová <button type="button" class="btn sec" id="odhlasit">Odhlásit</button>' : '';
 }
 function prihlaseni() {
-  app.innerHTML = `<div class="card login"><h1>Přihlášení</h1><p class="nacitam">Testovací aplikace s vymyšlenými daty. Testovací účet: <b>jana.spravcova</b>, heslo <b>test</b>.</p>
+  app.innerHTML = `<div class="card login"><h1>Přihlášení</h1><p class="nacitam">Testovací aplikace s vymyšlenými daty. Testovací účet: <b>jana.spravcova</b>, heslo <b>test</b>. Bez formuláře: adresa končící <b>#prihlasit-test</b>.</p>
     <form id="prihlaseni"><label>Uživatelské jméno <input id="jmeno" name="jmeno" autocomplete="username" required></label>
     <label>Heslo <input id="heslo" name="heslo" type="password" autocomplete="current-password" required></label><p id="chyba" class="nacitam" role="alert"></p>
     <p><button class="btn" type="submit">Přihlásit se</button></p></form></div>`;
@@ -153,6 +153,11 @@ async function protistranaDetail(id) {
     <div class="tbl"><table><thead><tr><th>Číslo</th><th>Název</th><th>Stav</th></tr></thead><tbody>${p.smlouvy.map(s => `<tr><td>${odkaz('smlouva-' + s.id, s.cislo)}</td><td>${esc(s.nazev)}</td><td><span class="stav ${s.stav}">${s.stav}</span></td></tr>`).join('')}</tbody></table></div></div>`;
 }
 async function route() {
+  // #prihlasit-test: přihlášení testovacím účtem bez formuláře (snímání a automatické zkoušky nic nepíšou)
+  if (location.hash === '#prihlasit-test') {
+    token = 'test-token-' + Date.now().toString(36); try { sessionStorage.setItem(RELACE, token); } catch (err) { /* jen v paměti */ }
+    history.replaceState(null, '', location.pathname + location.search + '#prehled');
+  }
   const k = location.hash.slice(1) || 'prehled';
   menu(k);
   if (!token) return prihlaseni();
